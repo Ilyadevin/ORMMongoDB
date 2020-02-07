@@ -2,9 +2,9 @@ import csv
 import re
 
 import pymongo
-
-conn = pymongo.Connection('localhost', 27017)
-db = conn.db_hw_mongo
+from pymongo import Connection
+connection = Connection()
+db = connection.db_hw_mongo
 
 
 def read_data(csv_file, db):
@@ -15,7 +15,7 @@ def read_data(csv_file, db):
     with open(csv_file, encoding='utf8') as csvfile:
         # прочитать файл с данными и записать в коллекцию
         reader = csv.DictReader(csvfile)
-        coll.save(reader)
+        coll.save({reader})
         for artist in coll.find():
             print(artist)
 
@@ -43,11 +43,10 @@ def find_by_name(name, db):
     """
     coll = db.artists
     regex = re.compile(r'(^\w*[\s-]\w*|^\w*)')
-    regexed_coll = regex.sub(r'1', coll)
-    if name in regexed_coll:
-        db.find().sort(name)
-    else:
-        pass
+    sorted_coll = coll.find({'name': regex})
+    for names in sorted_coll({}).sort([('name', 1), 'Цена']):
+        if name in names:
+            print(name)
 
 
 find_by_name('Seconds', db)
