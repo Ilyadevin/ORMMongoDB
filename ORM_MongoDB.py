@@ -45,7 +45,7 @@ def find_by_name(name, database):
     и вернуть их по возрастанию цены
     """
     regex = re.compile(r'(^\w*[\s-]\w*|^\w*)')
-    database.artists.find({'name': regex})
+    database.artists.find({'name': regex}, name)
 
 
 find_by_name('Seconds', db)
