@@ -1,7 +1,5 @@
 import csv
 import re
-
-import pymongo
 from mongoengine import connect
 
 db = connect("db_hw_mongo")
@@ -15,11 +13,19 @@ def read_data(csv_file, database):
     with open(csv_file, encoding='utf8') as csvfile:
         # прочитать файл с данными и записать в коллекцию
         csvfiles_int = [map(int, row) for row in csv.reader(csvfile, delimiter=',')]
+        csvfiles_float = [map(float, row) for row in csv.reader(csvfile, delimiter=',')]
         reader = csv.DictReader(csvfile)
-        collecion.insert_one({'Исполнитель': reader, 'Цена': reader, 'Место': reader, 'Дата': reader})
+        collecion.insert_one({'Исполнитель': reader, 'Цена': csvfiles_int, 'Место': reader, 'Дата': csvfiles_float})
 
 
 read_data('artists.csv', db)
+
+
+def data_sorting(database):
+    database.artists.sort({'Дата': 1})
+
+
+data_sorting(db)
 
 
 def find_cheapest(database):
@@ -39,12 +45,7 @@ def find_by_name(name, database):
     и вернуть их по возрастанию цены
     """
     regex = re.compile(r'(^\w*[\s-]\w*|^\w*)')
-    with open('artists.csv', encoding='utf8') as f:
-        if name in regex:
-            name_finded = name
-            database.artists.find({'name': name_finded}).sort({'Цена': 1})
-        else:
-            pass
+    database.artists.find({'name': regex})
 
 
 find_by_name('Seconds', db)
