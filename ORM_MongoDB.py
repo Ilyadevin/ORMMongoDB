@@ -27,7 +27,7 @@ def find_cheapest(database):
     return database.artist.find().sort([('Цена', 1)])
 
 
-find_cheapest(db)
+print('Самый дешевый билет:', find_cheapest(db))
 
 
 def find_by_name(name, database):
