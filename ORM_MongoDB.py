@@ -32,12 +32,8 @@ find_cheapest(db)
 
 def find_by_name(name, database):
 
-    pattern = re.compile(r'(^\w*[\s-]\w*|^\w*)')
-    regex = pattern.match(name)
+    regex = re.compile(name)
     return database.artist.find({'Исполнитель': regex})
 
 
-find_by_name('Seconds', db)
-
-if __name__ == '__main__':
-    pass
+print(find_by_name('Seconds', db))
